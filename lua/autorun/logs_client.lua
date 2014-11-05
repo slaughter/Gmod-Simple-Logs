@@ -2,6 +2,7 @@ if SERVER then return end --Make sure the server does not try to run any lua in 
 
 death_logs = {} --List that will hold all the information when player dies
 damage_logs = {} --List that will hold all the information when player gets hurt
+prop_logs = {} --List that will hold all the information when player spawns a prop
 
 function player_die_info( data )
 
@@ -51,6 +52,18 @@ function player_hurt_info( data )
 
 end
 usermessage.Hook( "player_hurt_info", player_hurt_info );
+
+function player_spawn_info( data )
+
+	player_name = data:ReadString() ------------------------
+	prop = data:ReadString() --Reading information From the user
+	timestamp = data:ReadLong() ------Message sent from the server
+
+	--See line 14
+	table.insert(prop_logs, {player_name = player_name, prop = prop, timestamp = timestamp})
+
+end
+usermessage.Hook( "player_spawn_info", player_spawn_info );
 
 
 --This function is used to calculate the time that has passed since
@@ -108,9 +121,23 @@ function menu()
 			message = v['victim'] .. " was hurt by " .. v['attacker'] .. " for " .. v['damage']
 			loglist_damage:AddLine(time_ago(v['timestamp']), message) --Add an entry to the list view containing the time and message.
 		end
+		
+		--Create the list to display damage logs
+		local loglist_props = vgui.Create("DListView")
+		loglist_props:SetSize(tabs:GetWide() - 10, tabs:GetTall() - 50) --So you do not need to change values if you decide to change frame size.
+		loglist_props:SetPos(5, 50)
+		loglist_props:AddColumn( "Time" ):SetFixedWidth(60) --Just so the time column does not take up so much space.
+		loglist_props:AddColumn( "Action" )
+
+		for i = #prop_logs, 1, -1 do --Iterate through the list prop_logs in reverse so most recent items are at the top.
+		  v = prop_logs[i]
+			message = v['player_name'] .. " spawned " .. v['prop']
+			loglist_props:AddLine(time_ago(v['timestamp']), message) --Add an entry to the list view containing the time and message.
+		end
 						 
 		tabs:AddSheet( "Deaths", loglist_deaths, false, false, "Death Logs" )
 		tabs:AddSheet( "Damage", loglist_damage, false, false, "Damage Logs" )
+		tabs:AddSheet( "Props", loglist_props, false, false, "Prop Logs" )
 
 	else
 		print("Insufficient permissions.") --This will print if the user is not an admin.
