@@ -1,3 +1,11 @@
+--[[
+	
+	Simple logs. Made by fghdx.
+	https://github.com/fghdx/Gmod-Simple-Logs/
+	fghdx.me
+
+]]--
+
 if CLIENT then return end --Make sure the client does not try to run any lua in this file.
 
 -- Function to call when a player dies.
@@ -55,3 +63,24 @@ function player_spawn_prop( ply, model )
 	umsg.End();----------------------------------------------
 end
 hook.Add("PlayerSpawnProp", "playerSpawnProp", player_spawn_prop)
+
+
+----------------------------------------------------------
+------------------ADD NEW FUNCTIONS HERE------------------
+----------------------------------------------------------
+
+--[[
+EXAMPLE:
+
+function function_name( param1, param2 )
+	
+	variable = param1
+
+	umsg.Start( "USERMESSAGE_NAME" );
+		umsg.String(variable)
+		umsg.Long(os.time())
+	umsg.End();
+end
+hook.Add("HOOK", "HOOK_IDENTIFIER", function_name)
+
+]]

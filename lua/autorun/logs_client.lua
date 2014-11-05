@@ -1,8 +1,22 @@
+--[[
+	
+	Simple logs. Made by fghdx.
+	https://github.com/fghdx/Gmod-Simple-Logs/
+	fghdx.me
+
+]]--
+
 if SERVER then return end --Make sure the server does not try to run any lua in this file.
 
+--Add tables Here--
 death_logs = {} --List that will hold all the information when player dies
 damage_logs = {} --List that will hold all the information when player gets hurt
 prop_logs = {} --List that will hold all the information when player spawns a prop
+--[[
+	EXAMPLE:
+	TABLE_NAME = {}
+]]
+
 
 function player_die_info( data )
 
@@ -47,7 +61,7 @@ function player_hurt_info( data )
 	damage = data:ReadLong() ------Message sent from the server
 	timestamp = data:ReadLong() -----------------------
 
-	--See line 14
+	--See line 24
 	table.insert(damage_logs, {victim = victim, attacker = attacker, damage = damage, timestamp = timestamp})
 
 end
@@ -59,11 +73,36 @@ function player_spawn_info( data )
 	prop = data:ReadString() --Reading information From the user
 	timestamp = data:ReadLong() ------Message sent from the server
 
-	--See line 14
+	--See line 24
 	table.insert(prop_logs, {player_name = player_name, prop = prop, timestamp = timestamp})
 
 end
 usermessage.Hook( "player_spawn_info", player_spawn_info );
+
+------------------------------------------------------
+------------------ADD NEW HOOKS HERE------------------
+------------------------------------------------------
+
+--[[
+	EXAMPLE:
+	function function_name( data )
+
+		variable = data:ReadString()
+		timestamp = data:ReadLong()
+
+		table.insert(TABLE_NAME, {variable = variable, timestamp = timestamp})
+
+	end
+	usermessage.Hook( "USERMESSAGE_NAME", function_name );
+
+
+]]
+
+
+
+-------------------------------------------------------
+-------------------------------------------------------
+
 
 
 --This function is used to calculate the time that has passed since
@@ -134,10 +173,45 @@ function menu()
 			message = v['player_name'] .. " spawned " .. v['prop']
 			loglist_props:AddLine(time_ago(v['timestamp']), message) --Add an entry to the list view containing the time and message.
 		end
-						 
+		
+		------------------------------------------------------
+		------------------ADD NEW LISTS HERE------------------
+		------------------------------------------------------
+		
+		--[[
+			EXAMPLE:
+			local loglist_EXAMPLE = vgui.Create("DListView")
+			loglist_EXAMPLE:SetSize(tabs:GetWide() - 10, tabs:GetTall() - 50) 
+			loglist_EXAMPLE:SetPos(5, 50)
+			loglist_EXAMPLE:AddColumn( "Time" ):SetFixedWidth(60) 
+			loglist_EXAMPLE:AddColumn( "Action" )
+
+			for i = #prop_logs, 1, -1 do
+			  v = prop_logs[i]
+				message = v['variable']
+				loglist_EXAMPLE:AddLine(time_ago(v['timestamp']), message) 
+			end
+		]]	
+
+
+
+
+		------------------------------------------------------
+		------------------ADD NEW TABS HERE-------------------
+		------------------------------------------------------
+
 		tabs:AddSheet( "Deaths", loglist_deaths, false, false, "Death Logs" )
 		tabs:AddSheet( "Damage", loglist_damage, false, false, "Damage Logs" )
 		tabs:AddSheet( "Props", loglist_props, false, false, "Prop Logs" )
+		
+		--[[
+			EXAMPLE:
+			tabs:AddSheet( "NAME:", LISTNAME, false, false, "TOOLTIP" )
+
+		]]
+
+		------------------------------------------------------
+		-------------------------------------------------------
 
 	else
 		print("Insufficient permissions.") --This will print if the user is not an admin.
