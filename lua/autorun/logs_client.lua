@@ -1,6 +1,7 @@
 if SERVER then return end --Make sure the server does not try to run any lua in this file.
 
 death_logs = {} --List that will hold all the information when player dies
+damage_logs = {} --List that will hold all the information when player gets hurt
 
 function player_die_info( data )
 
@@ -38,6 +39,19 @@ function player_die_info( data )
 end
 usermessage.Hook( "player_die_info", player_die_info );
 
+function player_hurt_info( data )
+
+	victim = data:ReadString() ------------------------
+	attacker = data:ReadString() --Reading information From the user
+	damage = data:ReadLong() ------Message sent from the server
+	timestamp = data:ReadLong() -----------------------
+
+	--See line 14
+	table.insert(damage_logs, {victim = victim, attacker = attacker, damage = damage, timestamp = timestamp})
+
+end
+usermessage.Hook( "player_hurt_info", player_hurt_info );
+
 
 --This function is used to calculate the time that has passed since
 --the event has happened.
@@ -57,25 +71,46 @@ end
 
 --Create the derma menu.
 function menu()
-	if LocalPlayer():IsAdmin() then --Only admins can open the logs.
+	if LocalPlayer():IsAdmin() or LocalPlayer():IsSuperAdmin() then --Only admins can open the logs.
 
 		--Create the frame
 		local frame = vgui.Create("DFrame")
 		frame:SetSize(400, 400)
+		frame:SetTitle("Simple Logs | fghdx.me")
 		frame:MakePopup()
-
+		
+		local tabs = vgui.Create( "DPropertySheet", frame )
+		tabs:SetPos( 5, 30 )
+		tabs:SetSize( frame:GetWide() - 10, frame:GetTall() - 35 )
+	
 		--Create the list to display the logs.
-		local loglist = vgui.Create("DListView", frame)
-		loglist:SetSize(frame:GetWide() - 10, frame:GetTall() - 30) --So you do not need to change values if you decide to change frame size.
-		loglist:SetPos(5, 25)
-		loglist:AddColumn( "Time" ):SetFixedWidth(60) --Just so the time column does not take up so much space.
-		loglist:AddColumn( "Action" )
+		local loglist_deaths = vgui.Create("DListView")
+		loglist_deaths:SetSize(tabs:GetWide() - 10, tabs:GetTall() - 50) --So you do not need to change values if you decide to change frame size.
+		loglist_deaths:SetPos(5, 50)
+		loglist_deaths:AddColumn( "Time" ):SetFixedWidth(60) --Just so the time column does not take up so much space.
+		loglist_deaths:AddColumn( "Action" )
 
-		for k, v in pairs(death_logs) do
+		for i = #death_logs, 1, -1 do --Iterate through the list death_logs in reverse so most recent items are at the top.
+		  v = death_logs[i]
 			message = v['victim'] .. " was killed by " .. v['killer'] .. " with " .. v['weapon']
-			loglist:AddLine(time_ago(v['timestamp']), message) --Add an entry to the list view containing the time and message.
+			loglist_deaths:AddLine(time_ago(v['timestamp']), message) --Add an entry to the list view containing the time and message.
 		end
 
+		--Create the list to display damage logs
+		local loglist_damage = vgui.Create("DListView")
+		loglist_damage:SetSize(tabs:GetWide() - 10, tabs:GetTall() - 50) --So you do not need to change values if you decide to change frame size.
+		loglist_damage:SetPos(5, 50)
+		loglist_damage:AddColumn( "Time" ):SetFixedWidth(60) --Just so the time column does not take up so much space.
+		loglist_damage:AddColumn( "Action" )
+
+		for i = #damage_logs, 1, -1 do --Iterate through the list damage_logs in reverse so most recent items are at the top.
+		  v = damage_logs[i]
+			message = v['victim'] .. " was hurt by " .. v['attacker'] .. " for " .. v['damage']
+			loglist_damage:AddLine(time_ago(v['timestamp']), message) --Add an entry to the list view containing the time and message.
+		end
+						 
+		tabs:AddSheet( "Deaths", loglist_deaths, false, false, "Death Logs" )
+		tabs:AddSheet( "Damage", loglist_damage, false, false, "Damage Logs" )
 
 	else
 		print("Insufficient permissions.") --This will print if the user is not an admin.
