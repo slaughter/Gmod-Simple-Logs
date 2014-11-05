@@ -1,0 +1,11 @@
+"AddonInfo"
+{
+	"name"		"Gmod-Simple-Logs"
+	"version"	"0"
+	"up_date"	""
+	"author_name"	""
+	"author_email"	""
+	"author_url"	""
+	
+	"info"		"A simple logging system for Garry's Mod."
+}
