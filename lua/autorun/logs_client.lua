@@ -48,9 +48,9 @@ function time_ago( timestamp )
 		if timeago < 60 then
 			timeago = timeago .. " Secs"
 		elseif timeago > 3600 then
-			timeago = (timeago / 60) .. " Hours"
+			timeago = math.Round(timeago / 60) .. " Hours"
 		else
-			timeago = (timeago / 60) .. " Mins"
+			timeago = math.Round(timeago / 60) .. " Mins"
 		end
 		return timeago
 end
