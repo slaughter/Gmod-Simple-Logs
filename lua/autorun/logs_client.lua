@@ -30,6 +30,11 @@ function player_die_info( data )
 	killerID = data:ReadString() -----message sent from the server
 	weapon = data:ReadString() ------------------------
 	timestamp = data:ReadLong() -----------------------
+	
+	message = victim .. " was killed by " .. killer .. "(" .. killerID ..  ") with " .. weapon
+	if GetConVar("fgh_logs_print_to_console"):GetInt() == 1 then
+		print(message)
+	end
 
 	table.insert(death_logs, {victim = victim, killer = killer, killerID = killerID, weapon = weapon, timestamp = timestamp})
 	--[[
@@ -67,6 +72,15 @@ function player_hurt_info( data )
 	attackerID = data:ReadString() --
 	damage = data:ReadLong() --------message sent from the server
 	timestamp = data:ReadLong() -----------------------
+	message = victim .. " was killed) spawned " .. prop
+	if GetConVar("fgh_logs_print_to_console"):GetInt() == 1 then
+		print(message)
+	end
+
+	message = vvictim .. " was hurt by " .. attacker .. "(" .. attackerID .. ") for " .. damage
+	if GetConVar("fgh_logs_print_to_console"):GetInt() == 1 then
+		print(message)
+	end
 
 	--See line 24
 	table.insert(damage_logs, {victim = victim, attacker = attacker, attackerID = attackerID, damage = damage, timestamp = timestamp})
@@ -81,7 +95,7 @@ function player_spawn_info( data )
 	prop = data:ReadString() ---------message sent from the server
 	timestamp = data:ReadLong() ------------------------------------
 	
-	message = player_name .. "(" .. playerID .. ") spawned " .. prop
+	message = victim .. " was killed) spawned " .. prop
 	if GetConVar("fgh_logs_print_to_console"):GetInt() == 1 then
 		print(message)
 	end
