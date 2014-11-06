@@ -25,13 +25,13 @@ prop_logs = {} --List that will hold all the information when player spawns a pr
 
 function player_die_info( data )
 
-	victim = data:ReadString() ------------------------
-	killer = data:ReadString() -----Reading information From the user
-	killerID = data:ReadString() -----message sent from the server
-	weapon = data:ReadString() ------------------------
-	timestamp = data:ReadLong() -----------------------
+	local victim = data:ReadString() ------------------------
+	local killer = data:ReadString() -----Reading information From the user
+	local killerID = data:ReadString() -----message sent from the server
+	local weapon = data:ReadString() ------------------------
+	local timestamp = data:ReadLong() -----------------------
 	
-	message = victim .. " was killed by " .. killer .. "(" .. killerID ..  ") with " .. weapon
+	local message = victim .. " was killed by " .. killer .. "(" .. killerID ..  ") with " .. weapon
 	if GetConVar("fgh_logs_print_to_console"):GetInt() == 1 then
 		print(message)
 	end
@@ -67,17 +67,12 @@ usermessage.Hook( "player_die_info", player_die_info );
 
 function player_hurt_info( data )
 
-	victim = data:ReadString() ------------------------
-	attacker = data:ReadString() ----Reading information From the user
-	attackerID = data:ReadString() --
-	damage = data:ReadLong() --------message sent from the server
-	timestamp = data:ReadLong() -----------------------
-	message = victim .. " was killed) spawned " .. prop
-	if GetConVar("fgh_logs_print_to_console"):GetInt() == 1 then
-		print(message)
-	end
-
-	message = vvictim .. " was hurt by " .. attacker .. "(" .. attackerID .. ") for " .. damage
+	local victim = data:ReadString() ------------------------
+	local attacker = data:ReadString() ----Reading information From the user
+	local attackerID = data:ReadString() --
+	local damage = data:ReadLong() --------message sent from the server
+	local timestamp = data:ReadLong() -----------------------
+	local message = victim .. " was hurt by " .. attacker .. "(" .. attackerID .. ") for " .. damage
 	if GetConVar("fgh_logs_print_to_console"):GetInt() == 1 then
 		print(message)
 	end
@@ -90,12 +85,12 @@ usermessage.Hook( "player_hurt_info", player_hurt_info );
 
 function player_spawn_info( data )
 
-	player_name = data:ReadString() -----------------------------
-	playerID = data:ReadString() -----Reading information From the user
-	prop = data:ReadString() ---------message sent from the server
-	timestamp = data:ReadLong() ------------------------------------
+	local player_name = data:ReadString() -----------------------------
+	local playerID = data:ReadString() -----Reading information From the user
+	local prop = data:ReadString() ---------message sent from the server
+	local timestamp = data:ReadLong() ------------------------------------
 	
-	message = victim .. " was killed) spawned " .. prop
+	local message = player_name .. " spawned " .. prop
 	if GetConVar("fgh_logs_print_to_console"):GetInt() == 1 then
 		print(message)
 	end
