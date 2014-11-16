@@ -6,7 +6,6 @@
 
 ]]--
 
-if SERVER then return end --Make sure the server does not try to run any lua in this file.
 
 --SETTING UP CONVARS
 CreateClientConVar("fgh_logs_print_to_console", 0, true, false)

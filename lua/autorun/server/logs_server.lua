@@ -6,8 +6,6 @@
 
 ]]--
 
-if CLIENT then return end --Make sure the client does not try to run any lua in this file.
-
 -- Function to call when a player dies.
 function player_die( victim, inflictor, killer)
 
