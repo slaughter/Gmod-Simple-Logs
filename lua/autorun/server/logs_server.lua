@@ -24,25 +24,17 @@ function player_die( victim, inflictor, killer)
 		
 		if ( weapon ~= NULL ) then
 			weapon = weapon:GetClass()
-			
-			umsg.Start( "player_die_info" );-------------------------
-				umsg.String(weapon)-------------be recieved by client
-				umsg.String(player_name)-----------------------------
-				umsg.String(killer_name)--------Sending the Data to 
-				umsg.String(killerID)----------- 
-				umsg.Long(time)--------------------------------------
-			umsg.End();----------------------------------------------
 		else
 			weapon = "Suicide"
-			
-			umsg.Start( "player_die_info" );-------------------------
-				umsg.String(weapon)-------------be recieved by client
-				umsg.String(player_name)-----------------------------
-				umsg.String(killer_name)--------Sending the Data to 
-				umsg.String(killerID)----------- 
-				umsg.Long(time)--------------------------------------
-			umsg.End();----------------------------------------------
 		end
+		
+		umsg.Start( "player_die_info" );-------------------------
+			umsg.String(weapon)-------------be recieved by client
+			umsg.String(player_name)-----------------------------
+			umsg.String(killer_name)--------Sending the Data to 
+			umsg.String(killerID)----------- 
+			umsg.Long(time)--------------------------------------
+		umsg.End();----------------------------------------------
 	end
 end
 hook.Add( "PlayerDeath", "playerDeath", player_die )
