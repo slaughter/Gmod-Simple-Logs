@@ -24,18 +24,27 @@ prop_logs = {} --List that will hold all the information when player spawns a pr
 
 function player_die_info( data )
 
+	local weapon = data:ReadString() ------------------------
 	local victim = data:ReadString() ------------------------
 	local killer = data:ReadString() -----Reading information From the user
 	local killerID = data:ReadString() -----message sent from the server
-	local weapon = data:ReadString() ------------------------
 	local timestamp = data:ReadLong() -----------------------
+	local message = ""
 	
-	local message = victim .. " was killed by " .. killer .. "(" .. killerID ..  ") with " .. weapon
+	if ( weapon ~= "Suicide" ) then
+		message = victim .. " was killed by " .. killer .. "(" .. killerID ..  ") with " .. weapon
+		
+		table.insert(death_logs, {victim = victim, killer = killer, killerID = killerID, weapon = weapon, timestamp = timestamp})
+	else
+		message = victim .. " suicided"
+		
+		table.insert(death_logs, {message = message, timestamp = timestamp})
+	end
+	
 	if GetConVar("fgh_logs_print_to_console"):GetInt() == 1 then
 		print(message)
 	end
 
-	table.insert(death_logs, {victim = victim, killer = killer, killerID = killerID, weapon = weapon, timestamp = timestamp})
 	--[[
 		The above line inserts a table containing all the information from the players death that we will
 		need to display in our list view into the death_logs table.
@@ -82,10 +91,12 @@ function player_hurt_info( data )
 end
 usermessage.Hook( "player_hurt_info", player_hurt_info );
 
+local playerID = ""
+
 function player_spawn_info( data )
 
 	local player_name = data:ReadString() -----------------------------
-	local playerID = data:ReadString() -----Reading information From the user
+	playerID = data:ReadString() -----Reading information From the user
 	local prop = data:ReadString() ---------message sent from the server
 	local timestamp = data:ReadLong() ------------------------------------
 	
@@ -184,7 +195,13 @@ function menu()
 
 		for i = #death_logs, 1, -1 do --Iterate through the list death_logs in reverse so most recent items are at the top.
 		  v = death_logs[i]
-			message = v['victim'] .. " was killed by " .. v['killer'] .. "(" .. v['killerID'] ..  ") with " .. v['weapon']
+		  
+		    if ( table.Count( v ) == 2 ) then
+				message = v['message']
+			else
+				message = v['victim'] .. " was killed by " .. v['killer'] .. "(" .. v['killerID'] ..  ") with " .. v['weapon']
+			end
+			
 			if GetConVar("fgh_logs_print_to_console"):GetInt() == 1 then
 				print(time_ago(v['timestamp']), message)
 			end
