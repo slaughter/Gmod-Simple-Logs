@@ -16,20 +16,26 @@ function player_die( victim, inflictor, killer)
 
 	if killer:IsPlayer() then --Make sure he was killed by another player.
 		player_name = victim:Name() --Get the Vicims name
-		weapon = killer:GetActiveWeapon():GetClass() --Get the weapon the victim was killed with
+		weapon = killer:GetActiveWeapon() --Get the weapon the victim was killed with
+
 		killer_name = killer:Name() --Get killers name
 		killerID = killer:SteamID() --Get killers ID
 		time = os.time() --Get the time the player died
-
+		
+		if ( weapon ~= NULL ) then
+			weapon = weapon:GetClass()
+		else
+			weapon = "Suicide"
+		end
+		
 		umsg.Start( "player_die_info" );-------------------------
+			umsg.String(weapon)-------------be recieved by client
 			umsg.String(player_name)-----------------------------
 			umsg.String(killer_name)--------Sending the Data to 
 			umsg.String(killerID)----------- 
-			umsg.String(weapon)-------------be recieved by client
 			umsg.Long(time)--------------------------------------
 		umsg.End();----------------------------------------------
 	end
-
 end
 hook.Add( "PlayerDeath", "playerDeath", player_die )
 
